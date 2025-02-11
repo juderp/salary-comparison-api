@@ -1,17 +1,14 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import pandas as pd
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 
-# Load the salary data
-file_path = "Copy of full_salary_comparison_report.xlsx"
-df = pd.read_excel(file_path)
-
-# ✅ Home Route to Fix 404 Issue
+# ✅ Fix Homepage Route to Serve HTML Instead of JSON
 @app.route('/')
 def home():
-    return jsonify({"message": "Salary Comparison API is Running! Use /salary?role=YourJobTitle"}), 200
+    return render_template('index.html')  # This should return the HTML page
 
+# ✅ Salary API Route
 @app.route('/salary', methods=['GET'])
 def get_salary():
     role = request.args.get('role', '').strip().lower()
