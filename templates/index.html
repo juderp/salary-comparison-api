@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary Comparison Tool</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+        select, button { font-size: 16px; padding: 10px; margin: 10px; }
+        #result { font-size: 20px; margin-top: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Salary Comparison Tool</h1>
+
+    <label for="role">Select Job Role:</label>
+    <select id="role">
+        <option value="Software Engineer">Software Engineer</option>
+        <option value="Data Scientist">Data Scientist</option>
+        <option value="DevOps Engineer">DevOps Engineer</option>
+        <option value="Full-Stack Developer">Full-Stack Developer</option>
+    </select>
+
+    <label for="country">Select Country:</label>
+    <select id="country">
+        <option value="Singapore Salary (SGD)">Singapore</option>
+        <option value="Malaysia Salary (SGD)">Malaysia</option>
+        <option value="Vietnam Salary (SGD)">Vietnam</option>
+        <option value="Thailand Salary (SGD)">Thailand</option>
+        <option value="Philippines Salary (SGD)">Philippines</option>
+        <option value="India (Bangalore) Salary (SGD)">India</option>
+    </select>
+
+    <br>
+    <button onclick="fetchSalary()">Compare Salary</button>
+
+    <p id="result"></p>
+
+    <script>
+        function fetchSalary() {
+            const role = document.getElementById("role").value;
+            const country = document.getElementById("country").value;
+
+            fetch(`/salary?role=${role}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById("result").innerText = "No data found.";
+                    } else {
+                        document.getElementById("result").innerText = `${role} Salary in ${country.replace(" Salary (SGD)", "")}: SGD ${data.salaries[country]}`;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById("result").innerText = "Error fetching data.";
+                });
+        }
+    </script>
+</body>
+</html>
