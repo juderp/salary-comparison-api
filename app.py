@@ -3,10 +3,14 @@ import pandas as pd
 
 app = Flask(__name__, template_folder='templates')
 
-# ✅ Fix Homepage Route to Serve HTML Instead of JSON
+# ✅ Load the salary data
+file_path = "Copy of full_salary_comparison_report.xlsx"
+df = pd.read_excel(file_path)
+
+# ✅ Homepage Route (Fixes JSON issue)
 @app.route('/')
 def home():
-    return render_template('index.html')  # This should return the HTML page
+    return render_template('index.html')  # Ensures index.html is served
 
 # ✅ Salary API Route
 @app.route('/salary', methods=['GET'])
