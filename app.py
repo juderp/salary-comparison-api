@@ -7,6 +7,11 @@ app = Flask(__name__)
 file_path = "Copy of full_salary_comparison_report.xlsx"
 df = pd.read_excel(file_path)
 
+# ✅ Home Route to Fix 404 Issue
+@app.route('/')
+def home():
+    return jsonify({"message": "Salary Comparison API is Running! Use /salary?role=YourJobTitle"}), 200
+
 @app.route('/salary', methods=['GET'])
 def get_salary():
     role = request.args.get('role', '').strip().lower()
