@@ -21,8 +21,20 @@
         <option value="Full-Stack Developer">Full-Stack Developer</option>
     </select>
 
-    <label for="country">Select Country:</label>
-    <select id="country">
+    <br>
+
+    <label for="country1">Select First Country:</label>
+    <select id="country1">
+        <option value="Singapore Salary (SGD)">Singapore</option>
+        <option value="Malaysia Salary (SGD)">Malaysia</option>
+        <option value="Vietnam Salary (SGD)">Vietnam</option>
+        <option value="Thailand Salary (SGD)">Thailand</option>
+        <option value="Philippines Salary (SGD)">Philippines</option>
+        <option value="India (Bangalore) Salary (SGD)">India</option>
+    </select>
+
+    <label for="country2">Select Second Country:</label>
+    <select id="country2">
         <option value="Singapore Salary (SGD)">Singapore</option>
         <option value="Malaysia Salary (SGD)">Malaysia</option>
         <option value="Vietnam Salary (SGD)">Vietnam</option>
@@ -32,14 +44,15 @@
     </select>
 
     <br>
-    <button onclick="fetchSalary()">Compare Salary</button>
+    <button onclick="fetchSalary()">Find Salary</button>
 
     <p id="result"></p>
 
     <script>
         function fetchSalary() {
             const role = document.getElementById("role").value;
-            const country = document.getElementById("country").value;
+            const country1 = document.getElementById("country1").value;
+            const country2 = document.getElementById("country2").value;
 
             fetch(`/salary?role=${role}`)
                 .then(response => response.json())
@@ -47,7 +60,22 @@
                     if (data.error) {
                         document.getElementById("result").innerText = "No data found.";
                     } else {
-                        document.getElementById("result").innerText = `${role} Salary in ${country.replace(" Salary (SGD)", "")}: SGD ${data.salaries[country]}`;
+                        const salary1 = data.salaries[country1];
+                        const salary2 = data.salaries[country2];
+
+                        if (salary1 && salary2) {
+                            const difference = salary2 - salary1;
+                            const percentageDiff = ((difference / salary1) * 100).toFixed(2);
+
+                            document.getElementById("result").innerHTML = `
+                                <strong>${role} Salary Comparison:</strong><br>
+                                ${country1.replace(" Salary (SGD)", "")}: <strong>SGD ${salary1}</strong><br>
+                                ${country2.replace(" Salary (SGD)", "")}: <strong>SGD ${salary2}</strong><br>
+                                Percentage Difference: <strong>${percentageDiff}%</strong>
+                            `;
+                        } else {
+                            document.getElementById("result").innerText = "One or both country salaries not found.";
+                        }
                     }
                 })
                 .catch(error => {

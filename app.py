@@ -7,12 +7,12 @@ app = Flask(__name__, template_folder='templates')
 file_path = "Copy of full_salary_comparison_report.xlsx"
 df = pd.read_excel(file_path)
 
-# ✅ Homepage Route (Fixes JSON issue)
+# ✅ Serve the frontend
 @app.route('/')
 def home():
-    return render_template('index.html')  # Ensures index.html is served
+    return render_template('index.html')
 
-# ✅ Salary API Route
+# ✅ Salary API - Supports Two Countries
 @app.route('/salary', methods=['GET'])
 def get_salary():
     role = request.args.get('role', '').strip().lower()
