@@ -15,10 +15,37 @@
 
     <label for="role">Select Job Role:</label>
     <select id="role">
-        <option value="Software Engineer">Software Engineer</option>
-        <option value="Data Scientist">Data Scientist</option>
-        <option value="DevOps Engineer">DevOps Engineer</option>
-        <option value="Full-Stack Developer">Full-Stack Developer</option>
+        <optgroup label="Technology">
+            <option value="Software Engineer">Software Engineer</option>
+            <option value="Full-Stack Developer">Full-Stack Developer</option>
+            <option value="DevOps Engineer">DevOps Engineer</option>
+            <option value="Data Scientist">Data Scientist</option>
+            <option value="IT Support Analyst">IT Support Analyst</option>
+            <option value="Cloud Engineer">Cloud Engineer</option>
+            <option value="Database Administrator">Database Administrator</option>
+            <option value="IT Project Manager">IT Project Manager</option>
+        </optgroup>
+        <optgroup label="Finance">
+            <option value="Accountant">Accountant</option>
+            <option value="Finance Manager">Finance Manager</option>
+            <option value="Financial Analyst">Financial Analyst</option>
+            <option value="Internal Auditor">Internal Auditor</option>
+            <option value="Tax Accountant">Tax Accountant</option>
+            <option value="Corporate Finance Manager">Corporate Finance Manager</option>
+        </optgroup>
+        <optgroup label="Marketing">
+            <option value="Digital Marketing Specialist">Digital Marketing Specialist</option>
+            <option value="SEO Manager">SEO Manager</option>
+            <option value="Social Media Manager">Social Media Manager</option>
+            <option value="E-commerce Manager">E-commerce Manager</option>
+            <option value="Performance Marketing Manager">Performance Marketing Manager</option>
+        </optgroup>
+        <optgroup label="Sales & Business">
+            <option value="Customer Account Manager">Customer Account Manager</option>
+            <option value="Sales Development Representative">Sales Development Representative</option>
+            <option value="Business Development Executive">Business Development Executive</option>
+            <option value="Product Manager">Product Manager</option>
+        </optgroup>
     </select>
 
     <br>
@@ -44,15 +71,35 @@
     </select>
 
     <br>
+
+    <label for="currency">Select Currency:</label>
+    <select id="currency">
+        <option value="SGD">SGD</option>
+        <option value="USD">USD</option>
+        <option value="HKD">HKD</option>
+        <option value="GBP">GBP</option>
+        <option value="EUR">EUR</option>
+    </select>
+
+    <br>
     <button onclick="fetchSalary()">Find Salary</button>
 
     <p id="result"></p>
 
     <script>
+        const exchangeRates = {
+            "SGD": 1,
+            "USD": 0.74,
+            "HKD": 5.79,
+            "GBP": 0.55,
+            "EUR": 0.68
+        };
+
         function fetchSalary() {
             const role = document.getElementById("role").value;
             const country1 = document.getElementById("country1").value;
             const country2 = document.getElementById("country2").value;
+            const currency = document.getElementById("currency").value;
 
             fetch(`/salary?role=${role}`)
                 .then(response => response.json())
@@ -60,17 +107,17 @@
                     if (data.error) {
                         document.getElementById("result").innerText = "No data found.";
                     } else {
-                        const salary1 = data.salaries[country1];
-                        const salary2 = data.salaries[country2];
+                        const salary1 = data.salaries[country1] * exchangeRates[currency];
+                        const salary2 = data.salaries[country2] * exchangeRates[currency];
 
                         if (salary1 && salary2) {
                             const difference = salary2 - salary1;
                             const percentageDiff = ((difference / salary1) * 100).toFixed(2);
 
                             document.getElementById("result").innerHTML = `
-                                <strong>${role} Salary Comparison:</strong><br>
-                                ${country1.replace(" Salary (SGD)", "")}: <strong>SGD ${salary1}</strong><br>
-                                ${country2.replace(" Salary (SGD)", "")}: <strong>SGD ${salary2}</strong><br>
+                                <strong>${role} Salary Comparison (${currency}):</strong><br>
+                                ${country1.replace(" Salary (SGD)", "")}: <strong>${currency} ${salary1.toFixed(2)}</strong><br>
+                                ${country2.replace(" Salary (SGD)", "")}: <strong>${currency} ${salary2.toFixed(2)}</strong><br>
                                 Percentage Difference: <strong>${percentageDiff}%</strong>
                             `;
                         } else {
