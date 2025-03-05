@@ -4,15 +4,15 @@ import pandas as pd
 app = Flask(__name__, template_folder='templates')
 
 # ✅ Load the updated salary data
-file_path = "salary_data.xlsx"  # Make sure this file is in your project directory
+file_path = "salary_data.xlsx"  # Use the new file
 df = pd.read_excel(file_path)
 
-# ✅ Serve the frontend UI
+# ✅ Homepage Route
 @app.route('/')
 def home():
     return render_template('index.html')
 
-# ✅ Salary API Route
+# ✅ Salary API Route (Updated Version)
 @app.route('/salary', methods=['GET'])
 def get_salary():
     role = request.args.get('role', '').strip().lower()
@@ -21,9 +21,8 @@ def get_salary():
     if matching_rows.empty:
         return jsonify({"error": f"No salary data found for '{role}'"}), 404
 
-    salary_data = {col: int(matching_rows[col].values[0]) for col in df.columns[1:]]
+    salary_data = {col: int(matching_rows[col].values[0]) for col in df.columns[1:]}
     return jsonify({"role": role, "salaries": salary_data})
 
 if __name__ == '__main__':
     app.run(debug=True)
-
